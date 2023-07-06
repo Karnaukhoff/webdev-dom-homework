@@ -21,7 +21,8 @@ const comments = [
 
   const initButtonLike = () => {
     for (const likeButton of document.querySelectorAll(".like-button")) {
-        likeButton.addEventListener("click", () => {
+        likeButton.addEventListener("click", (event) => {
+            event.stopPropagation();
             const index = likeButton.dataset.index;
             if (comments[index].likeExist === false) {
                 comments[index].countOfLikes += 1;
@@ -38,38 +39,47 @@ const comments = [
     }
 };
 
-initButtonLike();
+const answerCommet = () => {
+  const answerComments = document.querySelectorAll(".comment");
+  for (const answerComment of answerComments){
+    answerComment.addEventListener("click", () => {
+      const index = answerComment.dataset.index;
+      textComment.value = `>${comments[index].text}
 
+      ${comments[index].name}, `;
+      console.log(comments[index].text);
+      renderComments();
+    })
+  } 
+};
 
 const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
         const isLike = () => {
             if (comment.likeExist === true) {return `-active-like`;}
         };
-        return `<li class="comment">
-        <div class="comment-header">
+        return `<li class="comment" data-index=${index}>
+        <div class="comment-header">  
           <div>${comment.name}</div>
           <div>${comment.date}</div>
         </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            ${comment.date}
-          </div>
+        <div class="comment-body comment-text">
+        ${comment.text}
         </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${comment.countOfLikes}</span>
-            <button class="like-button ${isLike()}" data-index=${index}></button>
-          </div>
+        <div class="comment-footer likes">
+          <span class="likes-counter">${comment.countOfLikes}</span>
+          <button class="like-button ${isLike()}" data-index=${index}></button>
         </div>
-    </li>`;
+      </li>`;
     }).join("");
 
     comment.innerHTML = commentsHtml;
     initButtonLike();
+    answerCommet();
 };
 
-renderComments();    
+renderComments(); 
+
 
 
     const nameCommentUser = document.getElementById('nameCommentUser');
@@ -108,16 +118,22 @@ renderComments();
 
     comments.push(
         {
-            name: nameCommentUser.value,
+            name: nameCommentUser.value.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"),
             date: `${`${day}.${month}.${year} ${hours}:${minutes}`}`,
-            text: `${textComment.value}`,
+            text: `${textComment.value.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")}`,
             countOfLikes: 0,
             likeExist: false,
         },
     );
 
     renderComments();
-    })
+  })
 
     
     
