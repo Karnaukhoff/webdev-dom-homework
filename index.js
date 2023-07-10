@@ -2,8 +2,25 @@
 
 const comment = document.getElementById('comment');
 
-const comments = [
+let comments = [
     {
+        author: {name: "Глеб Фокин"},
+        date: "12.02.22 12:18",
+        text: "Это будет первый комментарий на этой странице",
+        likes: 3,
+        isLiked: false,
+    },
+    {
+        autor: {name: "Варвара Н."},
+        date: "13.02.22 19:22",
+        text: "Мне нравится как оформлена эта страница! ❤",
+        likes: 75,
+        isLiked: false,
+    },
+  ];
+
+  /*
+  {
         name: "Глеб Фокин",
         date: "12.02.22 12:18",
         text: "Это будет первый комментарий на этой странице",
@@ -17,20 +34,20 @@ const comments = [
         countOfLikes: 75,
         likeExist: false,
     },
-  ];
+  */
 
   const initButtonLike = () => {
     for (const likeButton of document.querySelectorAll(".like-button")) {
         likeButton.addEventListener("click", (event) => {
             event.stopPropagation();
             const index = likeButton.dataset.index;
-            if (comments[index].likeExist === false) {
-                comments[index].countOfLikes += 1;
-                comments[index].likeExist = true;
+            if (comments[index].isLiked === false) {
+                comments[index].likes += 1;
+                comments[index].isLiked = true;
                 console.log("works if");
             } else {
-                comments[index].countOfLikes -= 1;
-                comments[index].likeExist = false;
+                comments[index].likes -= 1;
+                comments[index].isLiked = false;
                 console.log("works else");
             }
             //console.log(index);
@@ -53,21 +70,46 @@ const answerCommet = () => {
   } 
 };
 
+const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
+  {
+    method: "GET",
+  }
+  );
+  
+fetchPromise.then((response) => {
+
+  const jsonPromise = response.json();
+  jsonPromise.then((responseData) =>{
+    const appComments = responseData.comments.map((comment) => {
+      return {
+        name: comment.author.name,
+        date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
+        text: comment.text,
+        likes: comment.likes,
+        isLiked: false,
+      };
+    });
+
+    comments = appComments;
+    renderComments();
+  });
+});
+
 const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
         const isLike = () => {
-            if (comment.likeExist === true) {return `-active-like`;}
+            if (comment.isLiked === true) {return `-active-like`;}
         };
         return `<li class="comment" data-index=${index}>
         <div class="comment-header">  
           <div>${comment.name}</div>
-          <div>${comment.date}</div>
+          <div>${new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}</div>
         </div>
         <div class="comment-body comment-text">
         ${comment.text}
         </div>
         <div class="comment-footer likes">
-          <span class="likes-counter">${comment.countOfLikes}</span>
+          <span class="likes-counter">${comment.likes}</span>
           <button class="like-button ${isLike()}" data-index=${index}></button>
         </div>
       </li>`;
@@ -80,7 +122,7 @@ const renderComments = () => {
 
 renderComments(); 
 
-
+//<div>${comment.author}</div>
 
     const nameCommentUser = document.getElementById('nameCommentUser');
     const textComment = document.getElementById('textComment');
@@ -115,8 +157,22 @@ renderComments();
         }
         return;
       }
+      fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          name: nameCommentUser.value,
+          text: textComment.value,
+        }),
+      }).then((response) => {
+    
+      response.json().then((responseData) =>{
+        comments = responseData.todos;
+        renderComments();
+      });
+    });
 
-    comments.push(
+    /*comments.push(
         {
             name: nameCommentUser.value.replaceAll("&", "&amp;")
             .replaceAll("<", "&lt;")
@@ -127,14 +183,10 @@ renderComments();
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")}`,
-            countOfLikes: 0,
-            likeExist: false,
+            likes: 0,
+            isLiked: false,
         },
-    );
+    );*/
 
     renderComments();
   })
-
-    
-    
-    //console.log("It works!")
