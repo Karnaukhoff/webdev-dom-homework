@@ -2,8 +2,9 @@
 
 const comment = document.getElementById('comment');
 
-let comments = [
-    {
+let comments = [];
+
+    /*{
         author: {name: "Глеб Фокин"},
         date: "12.02.22 12:18",
         text: "Это будет первый комментарий на этой странице",
@@ -17,7 +18,7 @@ let comments = [
         likes: 75,
         isLiked: false,
     },
-  ];
+  ];*/
 
   /*
   {
@@ -70,31 +71,6 @@ const answerCommet = () => {
   } 
 };
 
-const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
-  {
-    method: "GET",
-  }
-  );
-  
-fetchPromise.then((response) => {
-
-  const jsonPromise = response.json();
-  jsonPromise.then((responseData) =>{
-    const appComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
-        text: comment.text,
-        likes: comment.likes,
-        isLiked: false,
-      };
-    });
-
-    comments = appComments;
-    renderComments();
-  });
-});
-
 const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
         const isLike = () => {
@@ -119,8 +95,31 @@ const renderComments = () => {
     initButtonLike();
     answerCommet();
 };
+const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
+  {
+    method: "GET",
+  }
+  );
+  
+fetchPromise.then((response) => {
 
-renderComments(); 
+  const jsonPromise = response.json();
+  jsonPromise.then((responseData) =>{
+    const appComments = responseData.comments.map((comment) => {
+      return {
+        name: comment.author.name,
+        date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
+        text: comment.text,
+        likes: comment.likes,
+        isLiked: false,
+      };
+    });
+
+    comments = appComments;
+    renderComments();
+  });
+});
+//renderComments(); 
 
 //<div>${comment.author}</div>
 
@@ -167,10 +166,43 @@ renderComments();
       }).then((response) => {
     
       response.json().then((responseData) =>{
-        comments = responseData.todos;
+        const appComments = responseData.comments.map((comment) => {
+          return {
+            name: comment.author.name,
+            date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
+            text: comment.text,
+            likes: comment.likes,
+            isLiked: false,
+          };
+        });
+    
+        comments = appComments;
         renderComments();
       });
     });
+
+    fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
+  {
+    method: "GET",
+  }
+  ).then((response) => {
+
+  const jsonPromise = response.json();
+  jsonPromise.then((responseData) =>{
+    const appComments = responseData.comments.map((comment) => {
+      return {
+        name: comment.author.name,
+        date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
+        text: comment.text,
+        likes: comment.likes,
+        isLiked: false,
+      };
+    });
+
+    comments = appComments;
+    renderComments();
+  });
+});
 
     /*comments.push(
         {
@@ -187,6 +219,5 @@ renderComments();
             isLiked: false,
         },
     );*/
-
-    renderComments();
   })
+  renderComments();
