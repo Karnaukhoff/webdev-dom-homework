@@ -1,9 +1,6 @@
 "use strict";
-
 const comment = document.getElementById('comment');
-
 let comments = [];
-
     /*{
         author: {name: "Глеб Фокин"},
         date: "12.02.22 12:18",
@@ -19,7 +16,6 @@ let comments = [];
         isLiked: false,
     },
   ];*/
-
   /*
   {
         name: "Глеб Фокин",
@@ -36,7 +32,6 @@ let comments = [];
         likeExist: false,
     },
   */
-
   const initButtonLike = () => {
     for (const likeButton of document.querySelectorAll(".like-button")) {
         likeButton.addEventListener("click", (event) => {
@@ -56,21 +51,18 @@ let comments = [];
         });
     }
 };
-
 const answerCommet = () => {
   const answerComments = document.querySelectorAll(".comment");
   for (const answerComment of answerComments){
     answerComment.addEventListener("click", () => {
       const index = answerComment.dataset.index;
       textComment.value = `>${comments[index].text}
-
       ${comments[index].name}, `;
       console.log(comments[index].text);
       renderComments();
     })
   } 
 };
-
 const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
         const isLike = () => {
@@ -90,37 +82,34 @@ const renderComments = () => {
         </div>
       </li>`;
     }).join("");
-
     comment.innerHTML = commentsHtml;
     initButtonLike();
     answerCommet();
-    
+
 };
-const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
-  {
-    method: "GET",
-  }
-  );
-  
-fetchPromise.then((response) => {
-
-  const jsonPromise = response.json();
-  jsonPromise.then((responseData) =>{
-    const appComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
-        text: comment.text,
-        likes: comment.likes,
-        isLiked: false,
-      };
-    });
-
-    comments = appComments;
-    renderComments();
-  });
-});
-
+const fetchAndRender = () => {
+  return fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments", {
+          method: "GET",
+        }).then((response) => {
+          // Этот код сработает после того, как завершится промис от fetch POST
+          return response.json();
+        })
+        .then((responseData) => {
+          // Этот код сработает после того, как завершится промис от response.json() из предыдущего then
+          const appComments = responseData.comments.map((comment) => {
+            return {
+              name: comment.author.name,
+              date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
+              text: comment.text,
+              likes: comment.likes,
+              isLiked: false,
+            };
+          });
+          comments = appComments;
+          renderComments();
+        });
+} 
+fetchAndRender();
 renderComments(); 
 
 //<div>${comment.author}</div>
@@ -143,9 +132,6 @@ renderComments();
     if (hours < 10) { hours = '0' + hours}
     let minutes = currentDate.getMinutes();
 	if (minutes < 10) {minutes = '0' + currentDate.getMinutes()}
-
-
-
     buttonWriteComment.addEventListener("click", () => {
       nameCommentUser.classList.remove('error');
       textComment.classList.remove(".error");
@@ -166,60 +152,19 @@ renderComments();
           text: textComment.value,
         }),
       }).then((response) => {
-    
-      response.json().then((responseData) =>{
-        const appComments = responseData.comments.map((comment) => {
-          return {
-            name: comment.author.name,
-            date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
-            text: comment.text,
-            likes: comment.likes,
-            isLiked: false,
-          };
+        // Этот код сработает после того, как завершится промис от fetch POST
+        // На вход эта функция-обработчик получает ответ от сервера
+        return response.json();
+      })
+      .then(() => {
+        // Этот код сработает после того, как завершится промис от response.json()
+        // На вход эта функция-обработчик получает JSON-данные из ответа
+        return fetchAndRender();
         });
-    
-        comments = appComments;
+      //})
+      
         renderComments();
-      });
-    });
 
-    fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
-  {
-    method: "GET",
-  }
-  ).then((response) => {
 
-  const jsonPromise = response.json();
-  jsonPromise.then((responseData) =>{
-    const appComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}),
-        text: comment.text,
-        likes: comment.likes,
-        isLiked: false,
-      };
-    });
-
-    comments = appComments;
-    renderComments();
-  });
-});
-
-    /*comments.push(
-        {
-            name: nameCommentUser.value.replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;"),
-            date: `${`${day}.${month}.${year} ${hours}:${minutes}`}`,
-            text: `${textComment.value.replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")}`,
-            likes: 0,
-            isLiked: false,
-        },
-    );*/
   })
   renderComments();
