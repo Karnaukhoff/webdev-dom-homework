@@ -79,7 +79,7 @@ const renderComments = () => {
         return `<li class="comment" data-index=${index}>
         <div class="comment-header">  
           <div>${comment.name}</div>
-          <div>${new Date(comment.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}</div>
+          <div>${comment.date}</div>
         </div>
         <div class="comment-body comment-text">
         ${comment.text}
@@ -94,6 +94,7 @@ const renderComments = () => {
     comment.innerHTML = commentsHtml;
     initButtonLike();
     answerCommet();
+    
 };
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
   {
@@ -119,7 +120,8 @@ fetchPromise.then((response) => {
     renderComments();
   });
 });
-//renderComments(); 
+
+renderComments(); 
 
 //<div>${comment.author}</div>
 
