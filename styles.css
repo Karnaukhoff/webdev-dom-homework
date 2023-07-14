@@ -39,7 +39,10 @@ body {
     flex-direction: column;
     gap: 24px;
   }
-
+  .comments-load{
+    display: flex;
+    text-align: center;
+  }
   .comment {
     padding: 48px;
   }
@@ -106,7 +109,11 @@ body {
     border-radius: 8px;
     border: none;
   }
-
+  .add-form-load{
+    display: none;
+    text-align: center;
+    margin-top: 10px;
+  }
   .add-form-name {
     width: 300px;
     padding: 11px 22px;

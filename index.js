@@ -1,5 +1,5 @@
 "use strict";
-const comment = document.getElementById('comment');
+let comment = document.getElementById('comment');
 let comments = [];
     /*{
         author: {name: "Глеб Фокин"},
@@ -66,7 +66,7 @@ const answerCommet = () => {
 const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
         const isLike = () => {
-            if (comment.isLiked === true) {return `-active-like`;}
+          if (comment.isLiked === true) {return `-active-like`;}
         };
         return `<li class="comment" data-index=${index}>
         <div class="comment-header">  
@@ -85,7 +85,6 @@ const renderComments = () => {
     comment.innerHTML = commentsHtml;
     initButtonLike();
     answerCommet();
-
 };
 const fetchAndRender = () => {
   return fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments", {
@@ -107,10 +106,14 @@ const fetchAndRender = () => {
           });
           comments = appComments;
           renderComments();
-        });
+        })
+        .then(() => {
+          document.getElementById('comment-load').style.display = "none";
+          });
 } 
+//document.getElementById('comments-load').style.display = "flex";
 fetchAndRender();
-renderComments(); 
+//document.getElementById('comments-load').style.display = "none";
 
 //<div>${comment.author}</div>
 
@@ -131,7 +134,8 @@ renderComments();
     let hours = currentDate.getHours();
     if (hours < 10) { hours = '0' + hours}
     let minutes = currentDate.getMinutes();
-	if (minutes < 10) {minutes = '0' + currentDate.getMinutes()}
+	  if (minutes < 10) {minutes = '0' + currentDate.getMinutes()}
+
     buttonWriteComment.addEventListener("click", () => {
       nameCommentUser.classList.remove('error');
       textComment.classList.remove(".error");
@@ -144,6 +148,9 @@ renderComments();
         }
         return;
       }
+
+      document.getElementById('add-form').style.display = "none";
+      document.getElementById('add-form-load').style.display = "flex";
       fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
       {
         method: "POST",
@@ -160,11 +167,19 @@ renderComments();
         // Этот код сработает после того, как завершится промис от response.json()
         // На вход эта функция-обработчик получает JSON-данные из ответа
         return fetchAndRender();
-        });
+        })
+        .then(() => {
+          // Этот код сработает после того, как завершится промис от response.json()
+          // На вход эта функция-обработчик получает JSON-данные из ответа
+          document.getElementById('add-form').style.display = "flex";
+          document.getElementById('add-form-load').style.display = "none";
+          /*comment.style.display = "flex";
+          document.getElementById('comment-load').style.display = "none";*/
+          });
       //})
       
         renderComments();
 
 
   })
-  renderComments();
+  //renderComments();
