@@ -109,6 +109,8 @@ const fetchAndRender = () => {
         })
         .then(() => {
           document.getElementById('comment-load').style.display = "none";
+          document.getElementById('add-form').style.display = "flex";
+          document.getElementById('add-form-load').style.display = "none";
           });
 } 
 //document.getElementById('comments-load').style.display = "flex";
@@ -157,27 +159,49 @@ fetchAndRender();
         body: JSON.stringify({
           name: nameCommentUser.value,
           text: textComment.value,
+          forceError: true,
         }),
-      }).then((response) => {
-        // Этот код сработает после того, как завершится промис от fetch POST
-        // На вход эта функция-обработчик получает ответ от сервера
-        return response.json();
+      })
+      .then((response) => {
+        if (response.status === 201) {
+          return response.json();
+        }
+        else if (response.status === 400) {
+          //console.log(nameCommentUser.value.length);
+          if (nameCommentUser.value.length < 3) {
+            nameCommentUser.classList.add('error');
+          }
+          if (textComment.value.length < 3) {
+            textComment.classList.add('error');
+          }
+          throw new Error("Плохой запрос");
+        }
+        else if (response.status === 500){
+          nameCommentUser.classList.remove('error');
+          textComment.classList.remove("error");
+          throw new Error("Сервер упал");
+        }
       })
       .then(() => {
-        // Этот код сработает после того, как завершится промис от response.json()
-        // На вход эта функция-обработчик получает JSON-данные из ответа
-        return fetchAndRender();
+          nameCommentUser.value = "";
+          textComment.value = "";
+          nameCommentUser.classList.remove('error');
+          textComment.classList.remove("error");
+          return fetchAndRender();
         })
+      .catch((error) => {
+        if (error.message === "Плохой запрос") {
+          alert('Имя и комментарий должны быть не короче 3-х символов');
+        }
+        else {
+          alert('Что-то пошло не так, повторите попытку позже');
+        }
+          })
         .then(() => {
-          // Этот код сработает после того, как завершится промис от response.json()
-          // На вход эта функция-обработчик получает JSON-данные из ответа
-          document.getElementById('add-form').style.display = "flex";
-          document.getElementById('add-form-load').style.display = "none";
-          /*comment.style.display = "flex";
-          document.getElementById('comment-load').style.display = "none";*/
+            document.getElementById('add-form').style.display = "flex";
+            document.getElementById('add-form-load').style.display = "none";
           });
       //})
-      
         renderComments();
 
 
