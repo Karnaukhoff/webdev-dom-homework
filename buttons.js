@@ -16,16 +16,13 @@ export function likeStatus(likeButton, comments) {
         if (comments[index].isLiked === false) {
             comments[index].likes += 1;
             comments[index].isLiked = true;
-            console.log("works if");
         } else {
             comments[index].likes -= 1;
             comments[index].isLiked = false;
-            console.log("works else");
         }
 };
 export function getComment(answerComment, comments) {
     const index = answerComment.dataset.index;
     textComment.value = `>${comments[index].text}
     ${comments[index].name}, `;
-    console.log(comments[index].text);
 }
