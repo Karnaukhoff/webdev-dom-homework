@@ -1,5 +1,5 @@
 export function checkText(nameCommentUser, textComment) {
-    nameCommentUser.classList.remove('error');
+    nameCommentUser.classList.remove("error");
       textComment.classList.remove(".error");
       if (nameCommentUser.value === "" || textComment.value === "") {
         if (nameCommentUser.value === "") {

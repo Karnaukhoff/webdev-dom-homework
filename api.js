@@ -1,6 +1,18 @@
+const todosURL = "https://wedev-api.sky.pro/api/v2/maksim-karnaukhov/comments";
+const userURL = "https://wedev-api.sky.pro/api/user/login";
+
+export let token;
+
+export const setToken = (newToken)  => {
+    token = newToken;
+}
+
 export function getTodos() {
-    return fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments", {
+    return fetch(todosURL, {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
         }).then((response) => {
           return response.json();
         })
@@ -17,10 +29,10 @@ export function dataOfComment(responseData) {
       });
       return appComments;
 };
-export function postTodo () {
+export function postTodo (nameCommentUser, textComment) {
     document.getElementById('add-form').style.display = "none";
     document.getElementById('add-form-load').style.display = "flex";
-    return fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
+    return fetch(todosURL,
       {
         method: "POST",
         body: JSON.stringify({
@@ -28,6 +40,9 @@ export function postTodo () {
           text: textComment.value,
           forceError: false,
         }),
+        headers: {
+            Authorization: `Bearer ${token}`,
+          }
       })
       .then((response) => {
         if (response.status === 201) {
@@ -69,4 +84,20 @@ export function afterLoadComments() {
     document.getElementById('comment-load').style.display = "none";
     document.getElementById('add-form').style.display = "flex";
     document.getElementById('add-form-load').style.display = "none";
-}
+
+};
+export function login ({login, password}) {
+    /*document.getElementById('add-form').style.display = "none";
+    document.getElementById('add-form-load').style.display = "flex";*/
+    return fetch(userURL,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          login, 
+          password,
+        })
+      })
+      .then((response) => {
+          return response.json();
+        });
+    }

@@ -8,33 +8,14 @@
 
   <body>
     <div class="container">
+      <div id="app"></div>
+      <!-- Комментарии и форма добавления -->
       <ul class="comments-load" id="comment-load">
         Пожалуйста подождите, загружаю комментарии...
       </ul>
-      <ul class="comments" id="comment">
-      </ul>
-      <div class="add-form" id="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-          id="nameCommentUser"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-          id="textComment"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button" id="write-comment">Написать</button>
-        </div>
-      </div>
-      
-      <div class="add-form-load" id="add-form-load">
-        Комментарий добавляется...
-      </div>
+      <ul class="comments" id="comment"></ul>
+      <div class="authorization-message" id="authorization-message">Чтобы добавить комментарий, <a href="#" class="authorization-word" id="authorization-word">авторизуйтесь</a></div>
+      <div id="aferAuthorization"></div>
     </div>
     
   </body>

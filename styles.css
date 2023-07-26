@@ -40,7 +40,8 @@ body {
     gap: 24px;
   }
   .comments-load{
-    display: flex;
+    display: none;
+    /*display: flex;*/
     text-align: center;
   }
   .comment {
@@ -98,12 +99,12 @@ body {
   .add-form {
     padding: 20px;
     margin-top: 48px;
-    display: flex;
+    display: none;
     flex-direction: column;
   }
 
   .add-form-name,
-  .add-form-text {
+  .add-form-text  {
     font-size: 16px;
     font-family: Helvetica;
     border-radius: 8px;
@@ -146,4 +147,52 @@ body {
   
   .error{
     background-color: rgb(250, 97, 97);
+  }
+  .authorization {
+    padding: 20px;
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient( 75.42% 75.42% at 50% 42.37%, rgba(53, 53, 53, 0) 22.92%, #7334ea 100% );
+    border-radius: 20px;
+    width: 596px;
+    margin-bottom: 24px;
+  }
+  .authorization-heading {
+    margin-bottom: 10px;
+  }
+  .authorization-word{
+    color: #ffffff;
+    text-decoration: underline;
+    margin-left: 5px;
+  }
+  .authorization-message{
+    margin-top: 20px;
+    display: none;
+  }
+  .authorization-input{
+    padding: 15px 30px;
+    font-size: 16px;
+    font-family: Helvetica;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 15px;
+  }
+  .authorization-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .authorization-button {
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #bcec30;
+    border: none;
+    border-radius: 18px;
+    width: 596px;
+  }
+  .authorization-form-link{
+    display: flex;
+    color: #ffffff;
+    justify-content: center;
   }
