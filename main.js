@@ -34,7 +34,6 @@ const renderComments = () => {
 
 const fetchAndRender = () => {
   document.getElementById('comment-load').style.display = "flex";
-  //document.getElementById('add-form').style.display = "none";
 
   getTodos().then((responseData) => {
     comments = dataOfComment(responseData);
@@ -43,12 +42,10 @@ const fetchAndRender = () => {
     .then(() => {
       document.getElementById('comment-load').style.display = "none";
       document.getElementById('authorization-message').style.display = "flex";
-      //afterLoadComments();
     });
 } 
-//renderLogin();
 fetchAndRender();
-//authorization
+
 const authorizationButton = () => {
   for (const authorizationWord of document.querySelectorAll(".authorization-word")) {
     authorizationWord.addEventListener("click", () => {
