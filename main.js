@@ -70,7 +70,7 @@ const authorizationButton = () => {
             login: loginAuthorizationElement.value,
             password: passwordAuthorizationElement.value,
         }).then((responseData) => {
-            console.log(token);
+
             if (responseData.error === 'Неверный логин или пароль'){
               console.log(responseData.error);
               throw Error ("Неверный логин или пароль");
