@@ -1,6 +1,7 @@
 import { catchError, getTodos, postTodo,afterLoadComments, dataOfComment, login, setToken, token } from "./api.js";
 import { checkText, getComment, likeStatus } from "./buttons.js";
-import { uploadComments, renderLogin, renderSignUp, fetchAndRenderAfterAuthorization } from "./render.js";
+import { uploadComments, renderSignUp, fetchAndRenderAfterAuthorization } from "./render.js";
+import { renderLogin } from "./renderLogin.js";
 
 let comments = [];
 let comment = document.getElementById('comment');
@@ -47,6 +48,7 @@ const fetchAndRender = () => {
 } 
 //renderLogin();
 fetchAndRender();
+//authorization
 const authorizationButton = () => {
   for (const authorizationWord of document.querySelectorAll(".authorization-word")) {
     authorizationWord.addEventListener("click", () => {
@@ -64,12 +66,20 @@ const authorizationButton = () => {
       let passwordAuthorizationElement = document.getElementById("authorizationInputPassword");
       
       buttonAuthorizationElement.addEventListener("click", () => {
+        buttonAuthorizationElement.disabled = true;
+        buttonAuthorizationElement.value = "Подождите...";
+        console.log(buttonAuthorizationElement.value);
         login({
             login: loginAuthorizationElement.value,
             password: passwordAuthorizationElement.value,
         }).then((responseData) => {
             console.log(token);
-            setToken(responseData.user.token);
+            if (responseData.error === 'Неверный логин или пароль'){
+              console.log(responseData.error);
+              throw Error ("Неверный логин или пароль");
+            } else {
+              setToken(responseData.user.token);
+            }
             console.log(token);
             document.getElementById("comment-load").style.display = "flex";
             fetchAndRenderAfterAuthorization(responseData);
@@ -85,25 +95,52 @@ const authorizationButton = () => {
             const nameCommentUser = document.getElementById('nameCommentUser');
             const textComment = document.getElementById('textComment');
             checkText(nameCommentUser, textComment);
-            postTodo(nameCommentUser, textComment).then(() => {
+            postTodo(nameCommentUser, textComment).then((response) => {
+              if (response.status === 201) {
+                return response.json();
+              }
+              else if (response.status === 400) {
+                if (nameCommentUser.value.length < 3) {
+                  nameCommentUser.classList.add('error');
+                }
+                if (textComment.value.length < 3) {
+                  textComment.classList.add('error');
+                }
+                throw Error("Плохой запрос");
+              }
+              else if (response.status === 500){
+                nameCommentUser.classList.remove('error');
+                textComment.classList.remove("error");
+                throw Error("Сервер упал");
+              }
+            })
+            .then(() => {
+              nameCommentUser.value = "";
+              textComment.value = "";
+              nameCommentUser.classList.remove('error');
+              textComment.classList.remove("error");
+            }).then(() => {
               //return fetchAndRenderAfterAuthorization();
               document.getElementById('comment-load').style.display = "flex";
               getTodos().then((responseData) => {
               comments = dataOfComment(responseData);
               renderComments();
-            })
-              .then(() => {
+            }).then(() => {
                 document.getElementById('comment-load').style.display = "none";
                 afterLoadComments();
               });
+              }).catch((error) => {
+                console.log('Поймал ошибку');
+                catchError(error);
             })
-            .catch((error) => {
-              catchError(error);
-            });
+            })
+            
             renderComments();
-          })
+          }).catch((error) => {
+            console.log('Поймал ошибку');
+            catchError(error);
+        })
         });
-      })
         })
       }
     }

@@ -43,36 +43,20 @@ export function postTodo (nameCommentUser, textComment) {
         headers: {
             Authorization: `Bearer ${token}`,
           }
-      })
-      .then((response) => {
-        if (response.status === 201) {
-          return response.json();
-        }
-        else if (response.status === 400) {
-          if (nameCommentUser.value.length < 3) {
-            nameCommentUser.classList.add('error');
-          }
-          if (textComment.value.length < 3) {
-            textComment.classList.add('error');
-          }
-          throw new Error("Плохой запрос");
-        }
-        else if (response.status === 500){
-          nameCommentUser.classList.remove('error');
-          textComment.classList.remove("error");
-          throw new Error("Сервер упал");
-        }
-      })
-      .then(() => {
-        nameCommentUser.value = "";
-        textComment.value = "";
-        nameCommentUser.classList.remove('error');
-        textComment.classList.remove("error");
-      })
+      });
+      
 };
 export function catchError (error) {
     if (error.message === "Плохой запрос") {
         alert('Имя и комментарий должны быть не короче 3-х символов');
+
+      }
+      else if (error.message === "Неверный логин или пароль") {
+        alert("Введите корректные данные");
+        document.getElementById("buttonAuthorization").disabled = false;
+        document.getElementById("buttonAuthorization").value = "Войти";
+        document.getElementById("authorizationInputLogin").style.background = "rgb(250, 97, 97)";
+        document.getElementById("authorizationInputPassword").style.background = "rgb(250, 97, 97)";
       }
       else {
         alert('Что-то пошло не так, повторите попытку позже');
