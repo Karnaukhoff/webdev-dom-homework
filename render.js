@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 let appElement = document.getElementById("app");
 let aferAuthorizationElement = document.getElementById("aferAuthorization");
 
@@ -73,7 +75,7 @@ export function uploadComments(comments) {
         return `<li class="comment" data-index=${index}>
         <div class="comment-header">  
           <div>${comment.name}</div>
-          <div>${comment.date}</div>
+          <div>${format(new Date(comment.created_at), "yyyy-MM-dd HH:mm:ss")}</div>
         </div>
         <div class="comment-body comment-text">
         ${comment.text}
