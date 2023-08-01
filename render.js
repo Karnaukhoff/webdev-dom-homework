@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 let appElement = document.getElementById("app");
 let aferAuthorizationElement = document.getElementById("aferAuthorization");
@@ -70,14 +70,17 @@ export const fetchAndRenderAfterAuthorization = (responseData) => {
 export function uploadComments(comments) {
     let now = new Date();
     const commentsHtml = comments.map((comment, index) => {
-        //console.log(format(now, "MM-dd-yyyy hh:mm"));
+        let getTime = parse(comment.date.slice(0,10), 'dd.MM.yyyy', new Date());
+        getTime.setHours(comment.date.slice(12, 14));
+        getTime.setMinutes(comment.date.slice(15, 17));
+        getTime.setSeconds(comment.date.slice(18, 20));
         const isLike = () => {
             if (comment.isLiked === true) {return `-active-like`;}
           };
         return `<li class="comment" data-index=${index}>
         <div class="comment-header">  
           <div>${comment.name}</div>
-          <div>${comment.date}</div>
+          <div>${format(getTime, "yyyy-MM-dd HH:mm:ss")}</div>
         </div>
         <div class="comment-body comment-text">
         ${comment.text}
