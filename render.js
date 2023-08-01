@@ -68,14 +68,16 @@ export const fetchAndRenderAfterAuthorization = (responseData) => {
 };
 
 export function uploadComments(comments) {
+    let now = new Date();
     const commentsHtml = comments.map((comment, index) => {
+        //console.log(format(now, "MM-dd-yyyy hh:mm"));
         const isLike = () => {
             if (comment.isLiked === true) {return `-active-like`;}
           };
         return `<li class="comment" data-index=${index}>
         <div class="comment-header">  
           <div>${comment.name}</div>
-          <div>${format(new Date(comment.created_at), "yyyy-MM-dd HH:mm:ss")}</div>
+          <div>${comment.date}</div>
         </div>
         <div class="comment-body comment-text">
         ${comment.text}
