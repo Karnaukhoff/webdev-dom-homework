@@ -1,6 +1,18 @@
+const todosURL = "https://wedev-api.sky.pro/api/v2/maksim-karnaukhov/comments";
+const userURL = "https://wedev-api.sky.pro/api/user/login";
+
+export let token;
+
+export const setToken = (newToken)  => {
+    token = newToken;
+}
+
 export function getTodos() {
-    return fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments", {
+    return fetch(todosURL, {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
         }).then((response) => {
           return response.json();
         })
@@ -17,10 +29,10 @@ export function dataOfComment(responseData) {
       });
       return appComments;
 };
-export function postTodo () {
+export function postTodo (nameCommentUser, textComment) {
     document.getElementById('add-form').style.display = "none";
     document.getElementById('add-form-load').style.display = "flex";
-    return fetch("https://wedev-api.sky.pro/api/v1/maksim-karnaukhov/comments",
+    return fetch(todosURL,
       {
         method: "POST",
         body: JSON.stringify({
@@ -28,36 +40,23 @@ export function postTodo () {
           text: textComment.value,
           forceError: false,
         }),
-      })
-      .then((response) => {
-        if (response.status === 201) {
-          return response.json();
-        }
-        else if (response.status === 400) {
-          if (nameCommentUser.value.length < 3) {
-            nameCommentUser.classList.add('error');
+        headers: {
+            Authorization: `Bearer ${token}`,
           }
-          if (textComment.value.length < 3) {
-            textComment.classList.add('error');
-          }
-          throw new Error("Плохой запрос");
-        }
-        else if (response.status === 500){
-          nameCommentUser.classList.remove('error');
-          textComment.classList.remove("error");
-          throw new Error("Сервер упал");
-        }
-      })
-      .then(() => {
-        nameCommentUser.value = "";
-        textComment.value = "";
-        nameCommentUser.classList.remove('error');
-        textComment.classList.remove("error");
-      })
+      });
+      
 };
 export function catchError (error) {
     if (error.message === "Плохой запрос") {
         alert('Имя и комментарий должны быть не короче 3-х символов');
+
+      }
+      else if (error.message === "Неверный логин или пароль") {
+        alert("Введите корректные данные");
+        document.getElementById("buttonAuthorization").disabled = false;
+        document.getElementById("buttonAuthorization").value = "Войти";
+        document.getElementById("authorizationInputLogin").style.background = "rgb(250, 97, 97)";
+        document.getElementById("authorizationInputPassword").style.background = "rgb(250, 97, 97)";
       }
       else {
         alert('Что-то пошло не так, повторите попытку позже');
@@ -69,4 +68,20 @@ export function afterLoadComments() {
     document.getElementById('comment-load').style.display = "none";
     document.getElementById('add-form').style.display = "flex";
     document.getElementById('add-form-load').style.display = "none";
-}
+
+};
+export function login ({login, password}) {
+    /*document.getElementById('add-form').style.display = "none";
+    document.getElementById('add-form-load').style.display = "flex";*/
+    return fetch(userURL,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          login, 
+          password,
+        })
+      })
+      .then((response) => {
+          return response.json();
+        });
+    }
